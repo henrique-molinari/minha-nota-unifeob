@@ -2,80 +2,71 @@ import 'package:flutter/material.dart';
 import '../model/score_model.dart';
 
 class CalculatorViewModel extends ChangeNotifier {
-  // --- Estado Interno: 1º Bimestre ---
-  double _p1 = 0;
-  double _aia1 = 0;
-  double _atitudinal1 = 0;
+  double _p1 = 0, _aia1 = 0, _atitudinal1 = 0;
+  double _p2 = 0, _piValidacao = 0, _piApresentacao = 0;
+  double _piEquipe = 0, _piVideo = 0, _aia2 = 0, _atitudinal2 = 0;
+  // Status do 1º Bimestre
+  bool get b1Approved => score.totalB1 >= 7.0;
+  String get b1Message => b1Approved ? "Aprovado" : "Recuperação";
+  Color get b1Color => b1Approved ? Colors.greenAccent : Colors.redAccent;
 
-  // --- Estado Interno: 2º Bimestre ---
-  double _p2 = 0;
-  double _piValidacao = 0;
-  double _piApresentacao = 0;
-  double _piPresenca = 0; // Novo campo
-  double _aia2 = 0;
-  double _atitudinal2 = 0;
+  // Status do 2º Bimestre
+  bool get b2Approved => score.totalB2 >= 7.0;
+  String get b2Message => b2Approved ? "Aprovado" : "Recuperação";
+  Color get b2Color => b2Approved ? Colors.greenAccent : Colors.redAccent;
 
-  // --- Getters ---
-
-  /// Retorna o Model processado com todos os valores atuais.
+  // Status Geral do Semestre
+  bool get semesterApproved => score.isApproved;
+  String get semesterMessage => semesterApproved ? "Aprovado" : "Recuperação";
+  Color get semesterColor =>
+      semesterApproved ? Colors.greenAccent : Colors.redAccent;
   ScoreModel get score => ScoreModel(
-        p1: _p1,
-        aia1: _aia1,
-        atitudinal1: _atitudinal1,
-        p2: _p2,
-        piValidacao: _piValidacao,
-        piApresentacao: _piApresentacao,
-        piPresenca: _piPresenca,
-        aia2: _aia2,
-        atitudinal2: _atitudinal2,
-      );
+    p1: _p1,
+    aia1: _aia1,
+    atitudinal1: _atitudinal1,
+    p2: _p2,
+    piValidacao: _piValidacao,
+    piApresentacao: _piApresentacao,
+    piEquipe: _piEquipe,
+    piVideo: _piVideo,
+    aia2: _aia2,
+    atitudinal2: _atitudinal2,
+  );
 
-  /// Sugestão de distribuição para o B2 baseada nos novos pesos.
   Map<String, double> get distribuicaoIdealB2 {
     double falta = score.quantoFaltaParaPassar();
     if (falta <= 0) return {};
-    
-    // Razão de esforço necessária (0.0 a 1.0)
-    double razao = falta / 10.0;
-
+    double r = falta / 10.0;
     return {
-      'Prova 2 (P2)': 3.0 * razao,
-      'Validação PI': 2.0 * razao,
-      'Apresentação PI': 1.5 * razao,
-      'Presença PI': 0.5 * razao,
-      'AIA 2': 1.5 * razao,
-      'Atitudinal 2': 1.5 * razao,
+      'Prova 2 (P2)': 3.0 * r,
+      'Validação': 1.0 * r,
+      'Apresentação': 2.0 * r,
+      'Equipa': 0.5 * r,
+      'Vídeo': 0.5 * r,
+      'AIA 2': 1.5 * r,
+      'Atitudinal 2': 1.5 * r,
     };
   }
 
-  // --- Métodos de Atualização (Setters) ---
+  // Métodos de Update
+  void updateP1(String v) => _up(() => _p1 = _parse(v));
+  void updateAia1(String v) => _up(() => _aia1 = _parse(v));
+  void updateAtitudinal1(String v) => _up(() => _atitudinal1 = _parse(v));
+  void updateP2(String v) => _up(() => _p2 = _parse(v));
+  void updatePiValidacao(String v) => _up(() => _piValidacao = _parse(v));
+  void updatePiApresentacao(String v) => _up(() => _piApresentacao = _parse(v));
+  void updatePiEquipe(String v) => _up(() => _piEquipe = _parse(v));
+  void updatePiVideo(String v) => _up(() => _piVideo = _parse(v));
+  void updateAia2(String v) => _up(() => _aia2 = _parse(v));
+  void updateAtitudinal2(String v) => _up(() => _atitudinal2 = _parse(v));
 
-  void updateP1(String value) => _update(() => _p1 = _parseValue(value));
-  void updateAia1(String value) => _update(() => _aia1 = _parseValue(value));
-  void updateAtitudinal1(String value) => _update(() => _atitudinal1 = _parseValue(value));
-
-  void updateP2(String value) => _update(() => _p2 = _parseValue(value));
-  void updatePiValidacao(String value) => _update(() => _piValidacao = _parseValue(value));
-  void updatePiApresentacao(String value) => _update(() => _piApresentacao = _parseValue(value));
-  void updatePiPresenca(String value) => _update(() => _piPresenca = _parseValue(value));
-  void updateAia2(String value) => _update(() => _aia2 = _parseValue(value));
-  void updateAtitudinal2(String value) => _update(() => _atitudinal2 = _parseValue(value));
-
-  // --- Auxiliares ---
-
-  /// Centraliza a chamada do notifyListeners para evitar repetição.
-  void _update(VoidCallback action) {
-    action();
+  void _up(VoidCallback a) {
+    a();
     notifyListeners();
   }
 
-  double _parseValue(String value) {
-    return double.tryParse(value.replaceAll(',', '.')) ?? 0.0;
-  }
-
-  String get resultMessage => score.isApproved 
-      ? "Você está Aprovado! 🎉" 
-      : "Você está de Recuperação. 📝";
-
+  double _parse(String v) => double.tryParse(v.replaceAll(',', '.')) ?? 0.0;
+  String get resultMessage =>
+      score.isApproved ? "Aprovado! 🎉" : "Em Recuperação 📝";
   Color get statusColor => score.isApproved ? Colors.green : Colors.red;
 }

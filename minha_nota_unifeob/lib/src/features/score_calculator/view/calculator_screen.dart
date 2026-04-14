@@ -8,84 +8,46 @@ class CalculatorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Otimização: watch reconstrói apenas o necessário
     final viewModel = context.watch<CalculatorViewModel>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F2F5), // Fundo levemente azulado/neutro
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        title: const Text(
-          'Minha Nota UNIFEOB',
-          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
-        ),
+        title: const Text('Calculadora UNIFEOB'),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF0D47A1),
+        foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Cabeçalho de Resultado com RepaintBoundary para isolar a pintura
-              RepaintBoundary(
-                child: _buildResultHeader(viewModel),
-              ),
-
+              // Cabeçalho com notas e status individuais
+              RepaintBoundary(child: _buildHeader(viewModel)),
+              
               const SizedBox(height: 24),
-
-              // --- SEÇÃO 1º BIMESTRE ---
-              const _SectionHeader(
-                title: '1º Bimestre (B1)', 
-                icon: Icons.filter_1_rounded
-              ),
-              ScoreInputField(
-                label: 'Prova 1 (P1) - Máx 7.0',
-                onChanged: viewModel.updateP1,
-              ),
-              ScoreInputField(
-                label: 'AIA 1 - Máx 1.5',
-                onChanged: viewModel.updateAia1,
-              ),
-              ScoreInputField(
-                label: 'Atitudinais 1 - Máx 1.5',
-                onChanged: viewModel.updateAtitudinal1,
-              ),
-
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Divider(thickness: 1, color: Colors.black12),
-              ),
-
-              // --- SEÇÃO 2º BIMESTRE (LOGICA ATUALIZADA) ---
-              const _SectionHeader(
-                title: '2º Bimestre (B2)', 
-                icon: Icons.filter_2_rounded
-              ),
-              ScoreInputField(
-                label: 'Prova 2 (P2) - Máx 3.0',
-                onChanged: viewModel.updateP2,
-              ),
-              ScoreInputField(
-                label: 'Validação PI - Máx 2.0',
-                onChanged: viewModel.updatePiValidacao,
-              ),
-              ScoreInputField(
-                label: 'Apresentação PI - Máx 1.5',
-                onChanged: viewModel.updatePiApresentacao,
-              ),
-              ScoreInputField(
-                label: 'Presença PI - Máx 0.5',
-                onChanged: viewModel.updatePiPresenca,
-              ),
-              ScoreInputField(
-                label: 'AIA 2 - Máx 1.5',
-                onChanged: viewModel.updateAia2,
-              ),
-              ScoreInputField(
-                label: 'Atitudinais 2 - Máx 1.5',
-                onChanged: viewModel.updateAtitudinal2,
-              ),
+              
+              const _Section(title: '1º Bimestre', icon: Icons.looks_one),
+              ScoreInputField(label: 'P1 (Máx 7.0)', onChanged: viewModel.updateP1),
+              ScoreInputField(label: 'AIA 1 (Máx 1.5)', onChanged: viewModel.updateAia1),
+              ScoreInputField(label: 'Competência Atit. 1 (Máx 1.5)', onChanged: viewModel.updateAtitudinal1),
+              
+              const Divider(height: 40, thickness: 1),
+              
+              const _Section(title: '2º Bimestre', icon: Icons.looks_two),
+              ScoreInputField(label: 'P2 (Máx 3.0)', onChanged: viewModel.updateP2),
+              ScoreInputField(label: 'Validação (Máx 1.0)', onChanged: viewModel.updatePiValidacao),
+              ScoreInputField(label: 'Apresentação (Máx 2.0)', onChanged: viewModel.updatePiApresentacao),
+              ScoreInputField(label: 'Trabalho em Equipe (Máx 0.5)', onChanged: viewModel.updatePiEquipe),
+              ScoreInputField(label: 'Vídeo Form. p/ vida (Máx 0.5)', onChanged: viewModel.updatePiVideo),
+              ScoreInputField(label: 'AIA 2 (Máx 1.5)', onChanged: viewModel.updateAia2),
+              ScoreInputField(label: 'Competência Atit. 2 (Máx 1.5)', onChanged: viewModel.updateAtitudinal2),
+              
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -93,88 +55,95 @@ class CalculatorScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildResultHeader(CalculatorViewModel viewModel) {
-    final double b2Necessario = viewModel.score.quantoFaltaParaPassar();
-    final bool isPossible = b2Necessario <= 10.0;
-    final double average = viewModel.score.average;
-
+  Widget _buildHeader(CalculatorViewModel vm) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D47A1), // Azul profundo (Tema Novo)
+        color: const Color(0xFF0D47A1),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: vm.semesterColor, width: 2.5),
         boxShadow: [
           BoxShadow(
-            color: viewModel.statusColor.withOpacity(0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          )
         ],
-        border: Border.all(color: viewModel.statusColor, width: 2),
       ),
       child: Column(
         children: [
           const Text(
-            'MÉDIA CALCULADA',
-            style: TextStyle(color: Colors.white60, fontSize: 12, letterSpacing: 2),
+            "MÉDIA SEMESTRAL",
+            style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 4),
           Text(
-            average.toStringAsFixed(1),
+            vm.score.average.toStringAsFixed(1),
             style: const TextStyle(
               color: Colors.white, 
-              fontSize: 58, 
-              fontWeight: FontWeight.w900,
+              fontSize: 54, 
+              fontWeight: FontWeight.bold
             ),
           ),
-          Text(
-            viewModel.resultMessage.toUpperCase(),
-            style: TextStyle(
-              color: viewModel.statusColor, 
-              fontSize: 14, 
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Divider(color: Colors.white10),
-          ),
-          Text(
-            isPossible 
-              ? 'VOCÊ PRECISA DE ${b2Necessario.toStringAsFixed(1)} NO B2'
-              : 'NECESSÁRIO > 10.0 (ESTUDE MUITO!)',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: isPossible ? const Color(0xFFFFD700) : Colors.redAccent,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          const Divider(color: Colors.white24, height: 25),
+          
+          _statusRow("1º Bimestre:", vm.b1Message, vm.b1Color),
+          const SizedBox(height: 10),
+          _statusRow("2º Bimestre:", vm.b2Message, vm.b2Color),
+          const SizedBox(height: 10),
+          _statusRow("Semestre:", vm.semesterMessage, vm.semesterColor, isBold: true),
         ],
       ),
     );
   }
+
+  Widget _statusRow(String label, String status, Color color, {bool isBold = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white, fontSize: 15),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            status.toUpperCase(),
+            style: TextStyle(
+              color: color, 
+              fontSize: 14, 
+              fontWeight: isBold ? FontWeight.w900 : FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-class _SectionHeader extends StatelessWidget {
+class _Section extends StatelessWidget {
   final String title;
   final IconData icon;
-
-  const _SectionHeader({required this.title, required this.icon});
-
+  
+  const _Section({required this.title, required this.icon});
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(icon, size: 22, color: Theme.of(context).primaryColor),
+          Icon(icon, color: const Color(0xFF0D47A1), size: 24),
           const SizedBox(width: 10),
           Text(
-            title,
+            title, 
             style: const TextStyle(
-              fontSize: 20, 
-              fontWeight: FontWeight.bold, 
+              fontSize: 18, 
+              fontWeight: FontWeight.bold,
               color: Color(0xFF263238),
             ),
           ),
