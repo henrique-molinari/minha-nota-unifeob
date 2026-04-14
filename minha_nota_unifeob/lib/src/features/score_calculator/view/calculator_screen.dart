@@ -8,37 +8,37 @@ class CalculatorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Usamos watch para reagir às mudanças da ViewModel
+    // Otimização: watch reconstrói apenas o necessário
     final viewModel = context.watch<CalculatorViewModel>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Cinza neutro ultra-leve
+      backgroundColor: const Color(0xFFF0F2F5), // Fundo levemente azulado/neutro
       appBar: AppBar(
         title: const Text(
           'Minha Nota UNIFEOB',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
         ),
-        centerTitle: true,
-        elevation: 0,
       ),
       body: GestureDetector(
-        // Fecha o teclado ao clicar fora para melhor UX
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(), // Scroll suave
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Cabeçalho de Resultado - Otimizado com RepaintBoundary
+              // Cabeçalho de Resultado com RepaintBoundary para isolar a pintura
               RepaintBoundary(
                 child: _buildResultHeader(viewModel),
               ),
 
               const SizedBox(height: 24),
 
-              // Seção 1º Bimestre
-              const _SectionHeader(title: '1º Bimestre (B1)', icon: Icons.looks_one),
+              // --- SEÇÃO 1º BIMESTRE ---
+              const _SectionHeader(
+                title: '1º Bimestre (B1)', 
+                icon: Icons.filter_1_rounded
+              ),
               ScoreInputField(
                 label: 'Prova 1 (P1) - Máx 7.0',
                 onChanged: viewModel.updateP1,
@@ -57,19 +57,26 @@ class CalculatorScreen extends StatelessWidget {
                 child: Divider(thickness: 1, color: Colors.black12),
               ),
 
-              // Seção 2º Bimestre
-              const _SectionHeader(title: '2º Bimestre (B2)', icon: Icons.looks_two),
+              // --- SEÇÃO 2º BIMESTRE (LOGICA ATUALIZADA) ---
+              const _SectionHeader(
+                title: '2º Bimestre (B2)', 
+                icon: Icons.filter_2_rounded
+              ),
               ScoreInputField(
-                label: 'Prova 2 (P2) - Máx 4.0',
+                label: 'Prova 2 (P2) - Máx 3.0',
                 onChanged: viewModel.updateP2,
               ),
               ScoreInputField(
-                label: 'Validação PI - Máx 1.5',
+                label: 'Validação PI - Máx 2.0',
                 onChanged: viewModel.updatePiValidacao,
               ),
               ScoreInputField(
                 label: 'Apresentação PI - Máx 1.5',
                 onChanged: viewModel.updatePiApresentacao,
+              ),
+              ScoreInputField(
+                label: 'Presença PI - Máx 0.5',
+                onChanged: viewModel.updatePiPresenca,
               ),
               ScoreInputField(
                 label: 'AIA 2 - Máx 1.5',
@@ -87,28 +94,28 @@ class CalculatorScreen extends StatelessWidget {
   }
 
   Widget _buildResultHeader(CalculatorViewModel viewModel) {
-    final b2Necessario = viewModel.score.quantoFaltaParaPassar();
-    final isPossible = b2Necessario <= 10.0;
-    final average = viewModel.score.average;
+    final double b2Necessario = viewModel.score.quantoFaltaParaPassar();
+    final bool isPossible = b2Necessario <= 10.0;
+    final double average = viewModel.score.average;
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A), // Dark mode para o card de destaque
+        color: const Color(0xFF0D47A1), // Azul profundo (Tema Novo)
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: viewModel.statusColor.withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
+            color: viewModel.statusColor.withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
-        border: Border.all(color: viewModel.statusColor, width: 1.5),
+        border: Border.all(color: viewModel.statusColor, width: 2),
       ),
       child: Column(
         children: [
           const Text(
-            'MÉDIA SEMESTRAL',
+            'MÉDIA CALCULADA',
             style: TextStyle(color: Colors.white60, fontSize: 12, letterSpacing: 2),
           ),
           const SizedBox(height: 4),
@@ -116,7 +123,7 @@ class CalculatorScreen extends StatelessWidget {
             average.toStringAsFixed(1),
             style: const TextStyle(
               color: Colors.white, 
-              fontSize: 56, 
+              fontSize: 58, 
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -126,7 +133,6 @@ class CalculatorScreen extends StatelessWidget {
               color: viewModel.statusColor, 
               fontSize: 14, 
               fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
             ),
           ),
           const Padding(
@@ -136,10 +142,11 @@ class CalculatorScreen extends StatelessWidget {
           Text(
             isPossible 
               ? 'VOCÊ PRECISA DE ${b2Necessario.toStringAsFixed(1)} NO B2'
-              : 'NECESSÁRIO > 10.0 (RECUPERAÇÃO)',
+              : 'NECESSÁRIO > 10.0 (ESTUDE MUITO!)',
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: isPossible ? const Color(0xFFFFD700) : Colors.redAccent,
-              fontSize: 13,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -149,7 +156,6 @@ class CalculatorScreen extends StatelessWidget {
   }
 }
 
-// Widget privado para economizar memória e melhorar a legibilidade
 class _SectionHeader extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -162,14 +168,14 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Theme.of(context).primaryColor),
-          const SizedBox(width: 8),
+          Icon(icon, size: 22, color: Theme.of(context).primaryColor),
+          const SizedBox(width: 10),
           Text(
             title,
             style: const TextStyle(
-              fontSize: 18, 
+              fontSize: 20, 
               fontWeight: FontWeight.bold, 
-              color: Color(0xFF333333),
+              color: Color(0xFF263238),
             ),
           ),
         ],
