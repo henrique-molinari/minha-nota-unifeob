@@ -92,4 +92,5 @@ Nota: Caso queira apenas instalar o aplicativo no seu telemóvel sem precisar de
 🔗 [Baixar MédiaFEOB (APK)](https://drive.google.com/drive/folders/1xck59iAj5L0pIB-LDUkX3FAltS9Htz1U?usp=sharing)
 
 **Desenvolvido por Henrique Molinari.**
+
 *Este projeto é uma ferramenta de apoio acadêmico independente.*
