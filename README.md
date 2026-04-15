@@ -52,7 +52,7 @@ O sistema respeita a distribuição oficial de pontos da instituição:
 
 ### 2º Bimestre (Máximo 10,0)
 * **P2:** 3,0 pts
-* **Projeto Integrador (PI):** 4,0 pts
+* **Projeto Integrado (PI):** 4,0 pts
     * *Validação Profs: 1,0 pt*
     * *Apresentação: 2,0 pts*
     * *Trabalho Equipe: 0,5 pt*
