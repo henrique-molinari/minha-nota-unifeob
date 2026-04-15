@@ -1,84 +1,95 @@
-# Minha Nota UNIFEOB 🎓
 
-O **Minha Nota UNIFEOB** é uma solução mobile desenvolvida para auxiliar os estudantes da instituição a gerirem seu desempenho acadêmico de forma precisa. O aplicativo automatiza os cálculos das médias bimestrais e semestrais, respeitando os pesos de cada avaliação (AIA, PI, P1/P2), e oferece uma funcionalidade preditiva.
+# MédiaFEOB 🎓
+
+O **MédiaFEOB** é uma solução mobile desenvolvida para auxiliar os estudantes da **UNIFEOB** a gerirem seu desempenho acadêmico com precisão. O aplicativo automatiza o cálculo das médias e oferece uma funcionalidade preditiva ("Quanto falta?"), eliminando a necessidade de planilhas manuais.
 
 ---
 
 ## 🚀 Visão do Produto
 
-Diferente de calculadoras genéricas, este app é customizado para as regras de negócio da **UNIFEOB**, eliminando a necessidade de cálculos manuais complexos e ajudando o aluno a focar no que importa: os estudos.
+Customizado para as regras de negócio da instituição, o app fornece feedback visual imediato sobre o status do aluno (Aprovado ou Recuperação), garantindo que o estudante saiba exatamente o esforço necessário para atingir seus objetivos.
 
 ### Funcionalidades Principais
-* **Cálculo Detalhado por Bimestre:** Campos específicos para P1/P2, AIA, PI e Notas Atitudinais.
-* **Feedback de Status:** Alertas visuais indicando se o aluno está aprovado ou de recuperação.
-* **Calculadora Inversa ("Quanto falta?"):** Informa exatamente quanto o aluno precisa tirar no 2º Bimestre para atingir a média de aprovação.
-* **Design Institucional:** Interface moderna utilizando as cores Amarelo e Vermelho.
+* **Cálculo em Tempo Real:** Resultados atualizados instantaneamente conforme as notas são inseridas.
+* **Status Detalhado:** Visão individual do status por bimestre (B1, B2) e média final do semestre.
+* **Calculadora Inversa:** Exibe os pontos exatos necessários no 2º bimestre para aprovação direta.
+* **Interface Otimizada:** Design azul institucional focado em legibilidade e performance.
 
 ---
 
 ## 🛠️ Arquitetura e Tecnologias
 
-O projeto adota a arquitetura **MVVM (Model-View-ViewModel)** para garantir um código limpo, testável e de fácil manutenção.
+O projeto adota o padrão **MVVM (Model-View-ViewModel)** com **Clean Architecture**, garantindo separação total entre a lógica matemática e a interface.
 
-* **Linguagem:** Dart
-* **Framework:** Flutter (Android & iOS)
-* **Gerência de Estado:** Provider (ChangeNotifier)
-* **Arquitetura:** Clean Architecture simplificada com foco em Features.
+* **Linguagem:** Dart 3.x
+* **Framework:** Flutter
+* **Gerência de Estado:** Provider (`ChangeNotifier`)
+* **Design Pattern:** Observer (Reatividade UI-Model)
 
-### Estrutura de Pastas (lib/src)
+### Estrutura de Pastas (`lib/src`)
 ```text
 ├── core/
-│   ├── theme/          # Configuração de cores (Amarelo/Vermelho) e estilos globais.
-│   └── utils/          # Constantes e fórmulas matemáticas de cálculo.
+│   └── theme/          # Configuração visual (Azul FEOB) e estilos globais.
 ├── features/
 │   └── score_calculator/
-│       ├── model/      # Entidades de dados e lógica de negócio.
-│       ├── view/       # Interface do usuário (Telas).
-│       ├── view_model/ # Lógica de estado e ponte entre dados e UI.
-│       └── widgets/    # Componentes específicos da funcionalidade.
-└── main.dart           # Ponto de entrada da aplicação.
+│       ├── model/      # Entidade ScoreModel (Cérebro matemático).
+│       ├── view/       # Telas (CalculatorScreen).
+│       ├── view_model/ # Lógica de estado (CalculatorViewModel).
+│       └── widgets/    # Componentes reutilizáveis (Inputs).
+└── main.dart           # Ponto de entrada.
 ```
 
 ---
 
-## 📊 Regras de Cálculo (Métricas UNIFEOB)
+## 📊 Composição das Notas (B2 Atualizado)
 
-O sistema utiliza a seguinte composição de notas:
+O sistema respeita a distribuição oficial de pontos da instituição:
 
 ### 1º Bimestre (Máximo 10,0)
-* **Prova 1 (P1):** 7,0 pts
-* **AIA:** 1,5 pts
-* **Atitudinais:** 1,5 pts
+* **P1:** 7,0 pts
+* **AIA 1:** 1,5 pts
+* **Atitudinais 1:** 1,5 pts
 
 ### 2º Bimestre (Máximo 10,0)
-* **Prova 2 (P2):** 4,0 pts
-* **Validação PI:** 1,5 pts
-* **Apresentação PI:** 1,5 pts
-* **AIA:** 1,5 pts
-* **Atitudinais:** 1,5 pts
+* **P2:** 3,0 pts
+* **Projeto Integrador (PI):** 4,0 pts
+    * *Validação Profs: 1,0 pt*
+    * *Apresentação: 2,0 pts*
+    * *Trabalho Equipe: 0,5 pt*
+    * *Vídeo Formação: 0,5 pt*
+* **AIA 2:** 1,5 pts
+* **Atitudinais 2:** 1,5 pts
 
-> **Média Final:** $\frac{B1 + B2}{2} \geq 7,0$ para aprovação direta.
+> **Critério de Aprovação:** $\text{Média} = \frac{B1 + B2}{2} \geq 7,0$
 
 ---
 
-## 🏗️ Como Rodar o Projeto
+## 🏗️ Como Rodar e Gerar o APK
 
-1.  **Clone o repositório:**
+1.  **Clone e Instale:**
     ```bash
-    git clone [https://github.com/henrique-molinari/minha-nota-unifeob.git](https://github.com/henrique-molinari/minha-nota-unifeob.git)
-    ```
-2.  **Entre na pasta do projeto:**
-    ```bash
+    git clone https://github.com/henrique-molinari/minha-nota-unifeob.git
     cd minha_nota_unifeob
-    ```
-3.  **Instale as dependências:**
-    ```bash
     flutter pub get
     ```
-4.  **Execute o aplicativo:**
+
+2.  **Gere os Ícones:**
     ```bash
-    flutter run
+    flutter pub run flutter_launcher_icons
+    ```
+
+3.  **Build Otimizado (Versão Leve):**
+    Para gerar o APK de aproximadamente 15-20MB:
+    ```bash
+    flutter build apk --release --split-per-abi
     ```
 
 ---
-Desenvolvido por Henrique Molinari para facilitar a jornada dos estudantes da UNIFEOB.
+
+## 📥 Download e Instalação Rápida
+Nota: Caso queira apenas instalar o aplicativo no seu telemóvel sem precisar de configurar o ambiente de desenvolvimento, aceda ao link abaixo:
+
+🔗 (Baixar MédiaFEOB (APK)) [https://drive.google.com/drive/folders/1xck59iAj5L0pIB-LDUkX3FAltS9Htz1U?usp=sharing]
+
+**Desenvolvido por Henrique Molinari.**
+*Este projeto é uma ferramenta de apoio acadêmico independente.*
