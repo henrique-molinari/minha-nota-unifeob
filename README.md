@@ -86,7 +86,7 @@ O sistema respeita a distribuição oficial de pontos da instituição:
 
 ---
 
-## 📥 Download e Instalação Rápida (APK)
+## 📥 Download e Instalação Rápida (APK via Google Drive)
 Nota: Caso queira apenas instalar o aplicativo no seu telemóvel sem precisar de configurar o ambiente de desenvolvimento, aceda ao link abaixo:
 
 🔗 [Baixar MédiaFEOB (APK)](https://drive.google.com/drive/folders/1xck59iAj5L0pIB-LDUkX3FAltS9Htz1U?usp=sharing)
